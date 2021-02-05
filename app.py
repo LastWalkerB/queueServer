@@ -36,6 +36,8 @@ def createTable(arrivalTime, serviceTime, n = 0):
     averageNumberQueue = np.zeros(len(arrivalTime))
     probOfnCustomers = np.zeros(len(arrivalTime))
     probOfBusyServers = np.zeros(len(arrivalTime))
+    averageNumberSystem = np.zeros(len(arrivalTime))    
+    averageTimeInSystem = np.zeros(len(arrivalTime))
     zeroQueueCount = 0 #number of times queue length is zero
     flag = 1 #arival times must be ascendigly sorted.
     for i in range(0, len(arrivalTime)):
@@ -46,6 +48,7 @@ def createTable(arrivalTime, serviceTime, n = 0):
             timeOfService[0] = arrivalTime[0]
             waitingTime[0] = 0
             exitTime[0] = timeOfService[0] + serviceTime[0]
+            averageTimeInSystem[0] = exitTime[0] - arrivalTime[0]
         else:
             queueLength[i] = queueLength[i - 1]
             if queueLength[i] == 0: 
@@ -56,31 +59,38 @@ def createTable(arrivalTime, serviceTime, n = 0):
             exitTime[i] = timeOfService[i] + serviceTime[i]
             waitingTime[i] = exitTime[i-1] - arrivalTime[i]
             #computing cumilative average of waiting time
-            averageWaitingTime[i] = (averageWaitingTime[i-1]*(i-1)
+            averageWaitingTime[i] = (averageWaitingTime[i-1]*(i)
             + waitingTime[i])/(i+1)
-            #computing cumilative average of queue length
-            averageNumberQueue[i] = (averageNumberQueue[i-1]*(i-1)
-            + queueLength[i])/(i+1)
             for j in arrivalTime[flag:]:
                 if j < exitTime[i]:
                     queueLength[i] = queueLength[i] + 1
                     flag = flag +1  
+            averageNumberSystem[i] = (averageNumberQueue[i-1]*(i)
+            + queueLength[i]/(i+1))
             
             queueLength[i] = queueLength[i] - 1
+            
+            #computing cumilative average of queue length
+            averageNumberQueue[i] = (averageNumberQueue[i-1]*(i)
+            + queueLength[i])/(i+1)
             probOfnCustomers[i] = computeProbOfnCustomers(n, queueLength[0:i])
             #server is idle
             if (exitTime[i-1] < arrivalTime[i]):
                 probOfBusyServers[i] = 0
             else:
-                probOfBusyServers[i] = 1
+                probOfBusyServers[i] = 1 
+                
+            averageTimeInSystem[i] = (averageTimeInSystem[i-1]*(i) +  (exitTime[i] - arrivalTime[i]))/(i+1)
              
     dataset = pd.DataFrame({'inter Arrival Time': interArrivalTime, 'Arrival time': arrivalTime, 
                             'waiting Time': waitingTime,
                             'delay': delay, 'Time of service': timeOfService, 'Service Time': serviceTime, 
                            'exit time': exitTime, 'queue length': queueLength,
-                           '(Wq) average waiting time': averageWaitingTime,
                             '(Lq) average queue length': averageNumberQueue,
-                           '(Pn) probability of n customers': probOfnCustomers,
+                            '(L) average Number in system': averageNumberSystem,
+                           '(Wq) average waiting time': averageWaitingTime,  
+                            '(W) average Time in system:': averageTimeInSystem,
+                           '(P0) probability of 0 customers': probOfnCustomers,
                            '(roh) probability of busy server': probOfBusyServers})
     return dataset
             
