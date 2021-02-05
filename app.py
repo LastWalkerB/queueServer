@@ -98,6 +98,7 @@ def createTable(arrivalTime, serviceTime, n = 0):
 def main():
 
     st.title("SMS Assignment 1")
+    st.write("Navigate from the menu on the left")
     menu = ["GivenTable", "custom"]
     choice = st.sidebar.selectbox("Menu",menu)
     if choice =="GivenTable":
@@ -128,6 +129,7 @@ def main():
             mean1 = st.sidebar.text_input("mean", 10, 7)
             sd1 = st.sidebar.text_input("standard deviation", 5, 8)
             serviceTimes = generateGaussian(int(mean1), int(sd1), int(size))
+        st.sidebar.title("CLICK BELOW!")
         if st.sidebar.button("Generate Table", 9):
             st.write(createTable(arrivalTimes, serviceTimes))
     
