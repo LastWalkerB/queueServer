@@ -17,7 +17,9 @@ def computeProbOfnCustomers(n, queue):
             count+=1
     return count/len(queue)
 
-def generateUniform(min, max, size):
+def generateUniform(mean, size):
+    min = 0
+    max = mean + (mean - min)
     return np.random.uniform(min,max,size)
 def generateGaussian(mean, sd, size):
     return np.random.normal(mean, sd, size) #generating Gaussian distribution
@@ -101,9 +103,8 @@ def main():
         choice1 = st.sidebar.selectbox("arrival time", submenu)
         
         if choice1 == "Uniform":
-            min = st.sidebar.text_input("minimum", 4,1)
-            max = st.sidebar.text_input("maximum", 6, 2)
-            arrivalTimes = generateUniform(int(min),int(max),int(size)) 
+            mean = st.sidebar.text_input("mean", 4,1)
+            arrivalTimes = generateUniform(int(mean),int(size)) 
         if choice1 == "Gaussian":
             mean = st.sidebar.text_input("mean", 10, 3)
             sd = st.sidebar.text_input("standard deviation", 5, 4)
@@ -111,9 +112,8 @@ def main():
 
         choice2 = st.sidebar.selectbox("service time", submenu)
         if choice2 == "Uniform":
-            min1 = st.sidebar.text_input("minimum", 4, 5)
-            max1 = st.sidebar.text_input("maximum", 6, 6)
-            serviceTimes = generateUniform(int(min1),int(max1),int(size)) 
+            mean = st.sidebar.text_input("mean", 4, 5)
+            serviceTimes = generateUniform(int(mean),int(size)) 
         if choice2 == "Gaussian":
             mean1 = st.sidebar.text_input("mean", 10, 7)
             sd1 = st.sidebar.text_input("standard deviation", 5, 8)
